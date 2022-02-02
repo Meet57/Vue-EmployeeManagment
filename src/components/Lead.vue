@@ -37,13 +37,16 @@
                 </thead>
                 <tbody>
                     <tr v-for="lead in leaderData" :key="lead.id">
-                        <th> {{lead.id}} </th>
+                        <th> {{lead.id%1000}} </th>
                         <td> {{lead.name}} </td>
                         <td> {{lead.number}} </td>
                         <td>
                             <router-link class="btn btn-outline-primary" v-bind:to="'/team/'+lead.id">
                                 Team
                             </router-link>
+                            <button class="btn ms-2 btn-outline-danger" v-on:click="deleteLeader(lead.id)">
+                                Delete
+                            </button>
                         </td>
                     </tr>
                 </tbody>
@@ -62,10 +65,17 @@ export default {
     created(){
         this.$store.commit('leaderData')
     },
+    methods:{
+        deleteLeader(id){
+            this.$store.dispatch("deleteLeader", id)
+            this.$store.commit('leaderData')
+            // console.log(id);
+        }
+    },
     computed:{
         leaderData(){
             return this.$store.getters.leaderData
-        }
+        },
     }
 };
 </script>

@@ -7,16 +7,16 @@ export const store = new Vuex.Store({
     // strict: true,
     state: {
         Leader: [],
-        Team:[]
+        Team: [],
     },
     //Get data
     getters: {
         leaderData(state) {
             return state.Leader;
         },
-        teamData(state){
+        teamData(state) {
             return state.Team;
-        }
+        },
     },
     //Define functions
     mutations: {
@@ -31,10 +31,10 @@ export const store = new Vuex.Store({
                     console.log("Leader Added");
                 });
         },
-        addTeam(state,payload){
-            var id = Date.now()
-            var leader = payload.leader
-            payload.id = id
+        addTeam(state, payload) {
+            var id = Date.now();
+            var leader = payload.leader;
+            payload.id = id;
             firebase
                 .collection("Leader")
                 .doc(leader)
@@ -45,8 +45,30 @@ export const store = new Vuex.Store({
                     console.log("Member Added");
                 });
         },
+        deleteMember(state, payload) {
+            console.log(payload.id);
+            firebase
+                .collection("Leader")
+                .doc(payload.leader.toString())
+                .collection("Team")
+                .doc(payload.id.toString())
+                .delete()
+                .then(() => {
+                    console.log("deleted");
+                });
+        },
+        deleteLeader(state, payload) {
+            // console.log(payload);
+            firebase
+                .collection("Leader")
+                .doc(payload.toString())
+                .delete()
+                .then(() => {
+                    console.log("deleted");
+                });
+        },
         leaderData(state) {
-            let leader = []
+            let leader = [];
             firebase
                 .collection("Leader")
                 .get()
@@ -56,23 +78,23 @@ export const store = new Vuex.Store({
                         leader.push(doc.data());
                     });
                 });
-            state.Leader = leader
+            state.Leader = leader;
         },
-        teamData(state,payload){
-            let team = []
+        teamData(state, payload) {
+            let team = [];
             firebase
                 .collection("Leader")
                 .doc(payload)
-                .collection('Team').get()
+                .collection("Team")
+                .get()
                 .then((querySnapshot) => {
                     querySnapshot.forEach((doc) => {
                         // doc.data() is never undefined for query doc snapshots
                         team.push(doc.data());
                     });
                 });
-            state.Team = team
+            state.Team = team;
         },
-        
     },
     //function caller
     actions: {
@@ -80,9 +102,17 @@ export const store = new Vuex.Store({
         addLeader(context, payload) {
             context.commit("addLeader", payload);
         },
-        addTeam(context,payload){
-            context.commit("addTeam",payload)
+        addTeam(context, payload) {
+            context.commit("addTeam", payload);
             console.log(payload);
-        }
+        },
+        deleteMember(context, payload) {
+            context.commit("deleteMember", payload);
+            // console.log(payload);
+        },
+        deleteLeader(context, payload) {
+            context.commit("deleteLeader", payload);
+            // console.log(payload);
+        },
     },
 });

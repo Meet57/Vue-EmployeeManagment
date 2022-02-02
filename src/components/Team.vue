@@ -3,7 +3,15 @@
         <nav class="navbar navbar-expand-lg navbar-light bg-light container">
             <div class="container-fluid">
                 <a class="navbar-brand" href="#">MotaData</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <button
+                    class="navbar-toggler"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent"
+                    aria-controls="navbarSupportedContent"
+                    aria-expanded="false"
+                    aria-label="Toggle navigation"
+                >
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
@@ -12,7 +20,11 @@
                             <router-link to="/" class="nav-link">Home</router-link>
                         </li>
                         <li class="nav-item">
-                            <router-link v-bind:to="'/addteam/'+ this.$route.params.id" class="nav-link">Add Team Members</router-link>
+                            <router-link
+                                v-bind:to="'/addteam/' + this.$route.params.id"
+                                class="nav-link"
+                                >Add Team Members</router-link
+                            >
                         </li>
                     </ul>
                 </div>
@@ -37,11 +49,14 @@
                 </thead>
                 <tbody>
                     <tr v-for="member in teamData" :key="member.id">
-                        <th> {{member.id}} </th>
-                        <td> {{member.name}} </td>
-                        <td> {{member.number}} </td>
+                        <th>{{ member.id % 1000 }}</th>
+                        <td>{{ member.name }}</td>
+                        <td>{{ member.number }}</td>
                         <td>
-                            <button class="btn btn-outline-danger">
+                            <button
+                                v-on:click="deleteMember({ id: member.id, leader: member.leader })"
+                                class="btn btn-outline-danger"
+                            >
                                 Delete
                             </button>
                         </td>
@@ -54,19 +69,25 @@
 
 <script>
 export default {
-    data(){
-        return{
-            id: this.$route.params.id
-        }
+    data() {
+        return {
+            id: this.$route.params.id,
+        };
     },
-    created(){
-        this.$store.commit('teamData',this.id)
+    created() {
+        this.$store.commit("teamData", this.id);
     },
-    computed:{
-        teamData(){
-            return this.$store.getters.teamData
-        }
-    }
+    methods: {
+        deleteMember(id) {
+            this.$store.dispatch("deleteMember", id);
+            this.$store.commit("teamData", this.id);
+        },
+    },
+    computed: {
+        teamData() {
+            return this.$store.getters.teamData;
+        },
+    },
 };
 </script>
 
